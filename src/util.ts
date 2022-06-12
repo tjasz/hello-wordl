@@ -7,7 +7,7 @@ export enum Difficulty {
 }
 
 export const gameName = "hello wordl";
-export const maxGuesses = 6;
+export const maxGuesses = 10;
 
 export const dictionarySet: Set<string> = new Set(dictionary);
 
