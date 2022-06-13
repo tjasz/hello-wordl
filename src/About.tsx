@@ -10,8 +10,8 @@ export function About() {
         <a href="https://www.powerlanguage.co.uk/wordle/">
           <i>Wordle</i>
         </a>{" "}
-        by <a href="https://twitter.com/powerlanguish">powerlanguage</a>, which
-        I think is based on the TV show <i>Lingo</i>.
+        by <a href="https://twitter.com/powerlanguish">powerlanguage</a>,
+        but with the locations of the hints obscured.
       </p>
       <p>
         You get {maxGuesses} tries to guess a target word.
@@ -23,26 +23,46 @@ export function About() {
         rowState={RowState.LockedIn}
         wordLength={4}
         cluedLetters={[
-          { clue: Clue.Absent, letter: "w" },
+          { clue: Clue.Absent, letter: "c" },
           { clue: Clue.Absent, letter: "o" },
+          { clue: Clue.Absent, letter: "o" },
+          { clue: Clue.Absent, letter: "k" },
+        ]}
+      />
+      <p>
+        None of the letters in <strong>COOK</strong> are in the target word.
+      </p>
+      <Row
+        rowState={RowState.LockedIn}
+        wordLength={4}
+        cluedLetters={[
+          { clue: Clue.Absent, letter: "p" },
+          { clue: Clue.Absent, letter: "l" },
+          { clue: Clue.Elsewhere, letter: "a" },
+          { clue: Clue.Absent, letter: "n" },
+        ]}
+      />
+      <p>
+        One of the letters in <strong>PLAN</strong> is in the target word,
+        but in a different place.
+      </p>
+      <Row
+        rowState={RowState.LockedIn}
+        wordLength={4}
+        cluedLetters={[
+          { clue: Clue.Absent, letter: "w" },
+          { clue: Clue.Correct, letter: "a" },
           { clue: Clue.Correct, letter: "r" },
           { clue: Clue.Elsewhere, letter: "d" },
         ]}
       />
       <p>
-        <b>W</b> and <b>O</b> aren't in the target word at all.
+        <b className={"green-bg"}>2</b> of the letters in <strong>WARD </strong>
+        is in the correct place.
       </p>
       <p>
-        <b className={"green-bg"}>R</b> is correct! The third letter is{" "}
-        <b className={"green-bg"}>R</b>
-        .<br />
-        <strong>(There may still be a second R in the word.)</strong>
-      </p>
-      <p>
-        <b className={"yellow-bg"}>D</b> occurs <em>elsewhere</em> in the target
-        word.
-        <br />
-        <strong>(Perhaps more than once. 🤔)</strong>
+        <b className={"yellow-bg"}>1</b> other letter is in the target word,
+        but in a different place.
       </p>
       <hr />
       <p>
@@ -72,8 +92,7 @@ export function About() {
       />
       <p>
         Report issues{" "}
-        <a href="https://github.com/lynn/hello-wordl/issues">here</a>, or tweet{" "}
-        <a href="https://twitter.com/chordbug">@chordbug</a>.
+        <a href="https://github.com/tjasz/obscurdle/issues">here</a>.
       </p>
       <p>
         This game will be free and ad-free forever,
