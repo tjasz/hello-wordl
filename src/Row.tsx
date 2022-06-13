@@ -34,12 +34,7 @@ export function Row(props: RowProps) {
           key={i}
           className={letterClass}
           aria-live={isEditing ? "assertive" : "off"}
-          aria-label={
-            isLockedIn
-              ? letter.toUpperCase() +
-                (clue === undefined ? "" : ": " + clueWord(clue))
-              : ""
-          }
+          aria-label={letter.toUpperCase()}
         >
           {letter}
         </td>
