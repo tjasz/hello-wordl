@@ -75,6 +75,7 @@ export function describeClue(clue: CluedLetter[]): string {
 export function violation(
   difficulty: Difficulty,
   clues: CluedLetter[],
+  pastGuess: string,
   guess: string
 ): string | undefined {
   if (difficulty === Difficulty.Normal) {
@@ -82,40 +83,22 @@ export function violation(
   }
   const ultra = difficulty === Difficulty.UltraHard;
   let i = 0;
-  for (const { letter, clue } of clues) {
-    const clueCount = clues.filter(
-      (c) => c.letter === letter && c.clue !== Clue.Absent
-    ).length;
-    const guessCount = guess.split(letter).length - 1;
-    const glyph = letter.toUpperCase();
-    const glyphs = glyph + (clueCount !== 1 ? "s" : "");
-    const nth = ordinal(i + 1);
 
-    // Hard: enforce greens stay in place.
-    if (clue === Clue.Correct && guess[i] !== letter) {
-      return nth + " letter must be " + glyph;
+  // Hard: guesses should have the right amount of letters from each clue
+  const obscured = obscureClue(clues);
+  const inCommon = obscureClue(clue(guess, pastGuess));
+  const numberIn = ((obscured.get(Clue.Elsewhere) ?? 0) + (obscured.get(Clue.Correct) ?? 0));
+  const sharesCorrectAmount = numberIn ==
+    ((inCommon.get(Clue.Elsewhere) ?? 0) + (inCommon.get(Clue.Correct) ?? 0));
+  if (!sharesCorrectAmount) {
+    return `Guess must share ${numberIn} letter${numberIn !== 1 ? "s" : ""} with '${pastGuess.toUpperCase()}'.`;
+  }
+  // Ultra hard: also obey Correct clues
+  if (ultra) {
+    const numberCorrect = obscured.get(Clue.Correct) ?? 0;
+    if ((inCommon.get(Clue.Correct) ?? 0) != numberCorrect) {
+      return `Guess must have ${numberCorrect} letter${numberCorrect !== 1 ? "s" : ""} in the same place as in '${pastGuess.toUpperCase()}'.`;
     }
-
-    // Hard: enforce yellows are used.
-    if (guessCount < clueCount) {
-      const atLeastN =
-        clueCount > 1 ? `at least ${englishNumbers[clueCount]} ` : "";
-      return `Guess must contain ${atLeastN}${glyphs}`;
-    }
-
-    // Ultra Hard: disallow would-be greens.
-    if (ultra && clue !== Clue.Correct && guess[i] === letter) {
-      return nth + " letter can't be " + glyph;
-    }
-
-    // Ultra Hard: if the exact amount is known because of an Absent clue, enforce it.
-    if (ultra && clue === Clue.Absent && guessCount !== clueCount) {
-      return clueCount === 0
-        ? `Guess can't contain ${glyph}`
-        : `Guess must contain exactly ${englishNumbers[clueCount]} ${glyphs}`;
-    }
-
-    ++i;
   }
   return undefined;
 }

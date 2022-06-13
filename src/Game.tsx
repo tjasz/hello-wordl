@@ -184,7 +184,7 @@ function Game(props: GameProps) {
       }
       for (const g of guesses) {
         const c = clue(g, target);
-        const feedback = violation(props.difficulty, c, currentGuess);
+        const feedback = violation(props.difficulty, c, g, currentGuess);
         if (feedback) {
           setHint(feedback);
           return;

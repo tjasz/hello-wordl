@@ -138,8 +138,8 @@ function App() {
                 {
                   [
                     `Guesses must be valid dictionary words.`,
-                    `Wordle's "Hard Mode". Green letters must stay fixed, and yellow letters must be reused.`,
-                    `An even stricter Hard Mode. Yellow letters must move away from where they were clued, and gray clues must be obeyed.`,
+                    `"Elsewhere" hints enforced. Guesses must share with past guesses the amount of letters indicated.`,
+                    `"Correct" hints enforced. Guesses must have the indicated number of letters in the same spot as in past guesses.`,
                   ][difficulty]
                 }
               </div>
