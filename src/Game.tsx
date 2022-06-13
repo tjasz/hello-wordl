@@ -233,15 +233,6 @@ function Game(props: GameProps) {
       const guess = [...guesses, currentGuess][i] ?? "";
       const cluedLetters = clue(guess, target);
       const lockedIn = i < guesses.length;
-      if (lockedIn) {
-        for (const { clue, letter } of cluedLetters) {
-          if (clue === undefined) break;
-          const old = letterInfo.get(letter);
-          if (old === undefined || clue > old) {
-            letterInfo.set(letter, clue);
-          }
-        }
-      }
       return (
         <Row
           key={i}

@@ -32,6 +32,15 @@ export function clue(word: string, target: string): CluedLetter[] {
   });
 }
 
+export function obscureClue(cluedLetters : CluedLetter[]) : Map<Clue, number>{
+  let obscured = new Map<Clue, number>();
+  for (const { clue, letter } of cluedLetters) {
+    if (clue === undefined) continue;
+    obscured.set(clue, 1 + (obscured.get(clue) ?? 0));
+  }
+  return obscured;
+}
+
 export function clueClass(clue: Clue): string {
   if (clue === Clue.Absent) {
     return "letter-absent";
