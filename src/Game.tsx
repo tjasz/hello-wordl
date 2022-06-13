@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Row, RowState } from "./Row";
 import dictionary from "./dictionary.json";
-import { Clue, clue, describeClue, violation } from "./clue";
+import { Clue, clue, describeClue, obscureClue, violation } from "./clue";
 import { Keyboard } from "./Keyboard";
 import targetList from "./targets.json";
 import {
@@ -232,7 +232,15 @@ function Game(props: GameProps) {
     .map((_, i) => {
       const guess = [...guesses, currentGuess][i] ?? "";
       const cluedLetters = clue(guess, target);
+      const obscuredClue = obscureClue(cluedLetters);
       const lockedIn = i < guesses.length;
+      if (lockedIn) {
+        if (!obscuredClue.has(Clue.Correct) && !obscuredClue.has(Clue.Elsewhere)) {
+          for (const { clue, letter } of cluedLetters) {
+            letterInfo.set(letter, Clue.Absent);
+          }
+        }
+      }
       return (
         <Row
           key={i}
