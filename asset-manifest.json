@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/obscurdle/static/css/main.a5817f8b.css",
-    "main.js": "/obscurdle/static/js/main.44b44775.js",
+    "main.js": "/obscurdle/static/js/main.416f273e.js",
     "index.html": "/obscurdle/index.html",
     "main.a5817f8b.css.map": "/obscurdle/static/css/main.a5817f8b.css.map",
-    "main.44b44775.js.map": "/obscurdle/static/js/main.44b44775.js.map"
+    "main.416f273e.js.map": "/obscurdle/static/js/main.416f273e.js.map"
   },
   "entrypoints": [
     "static/css/main.a5817f8b.css",
-    "static/js/main.44b44775.js"
+    "static/js/main.416f273e.js"
   ]
 }
