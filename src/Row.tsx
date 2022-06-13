@@ -14,6 +14,7 @@ interface RowProps {
 }
 
 export function Row(props: RowProps) {
+  let obscuredClue = obscureClue(props.cluedLetters);
   const isLockedIn = props.rowState === RowState.LockedIn;
   const isEditing = props.rowState === RowState.Editing;
   const letterDivs = props.cluedLetters
@@ -22,7 +23,11 @@ export function Row(props: RowProps) {
     .map(({ clue, letter }, i) => {
       let letterClass = "Row-letter";
       if (isLockedIn && clue !== undefined) {
-        letterClass += " " + clueClass(Clue.Absent);
+        if (obscuredClue.has(Clue.Correct) || obscuredClue.has(Clue.Elsewhere)) {
+          letterClass += " " + clueClass(Clue.Unknown);
+        } else {
+          letterClass += " " + clueClass(Clue.Absent);
+        }
       }
       return (
         <td
@@ -41,7 +46,6 @@ export function Row(props: RowProps) {
       );
     });
   let rowClass = "Row";
-  let obscuredClue = obscureClue(props.cluedLetters);
   let numberElsewhere = 0;
   let numberCorrect = 0;
   if (isLockedIn) {

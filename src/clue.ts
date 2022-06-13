@@ -1,6 +1,7 @@
 import { Difficulty, englishNumbers, ordinal } from "./util";
 
 export enum Clue {
+  Unknown,
   Absent,
   Elsewhere,
   Correct,
@@ -42,7 +43,9 @@ export function obscureClue(cluedLetters : CluedLetter[]) : Map<Clue, number>{
 }
 
 export function clueClass(clue: Clue): string {
-  if (clue === Clue.Absent) {
+  if (clue === Clue.Unknown) {
+    return "letter-unknown";
+  } else if (clue === Clue.Absent) {
     return "letter-absent";
   } else if (clue === Clue.Elsewhere) {
     return "letter-elsewhere";
@@ -52,7 +55,9 @@ export function clueClass(clue: Clue): string {
 }
 
 export function clueWord(clue: Clue): string {
-  if (clue === Clue.Absent) {
+  if (clue === Clue.Unknown) {
+    return "unknown";
+  } else if (clue === Clue.Absent) {
     return "no";
   } else if (clue === Clue.Elsewhere) {
     return "elsewhere";

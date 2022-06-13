@@ -136,7 +136,13 @@ table.Game-rows > tbody {
 
 .letter-absent {
   border: 2px solid transparent;
-  background-color: rgb(162, 162, 162);
+  background-color: rgb(140, 140, 140);
+  color: white !important;
+}
+
+.letter-unknown {
+  border: 2px solid transparent;
+  background-color: rgb(208, 208, 208);
   color: white !important;
 }
 
