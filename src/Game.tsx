@@ -337,24 +337,21 @@ function Game(props: GameProps) {
         {gameState !== GameState.Playing && (
           <button
             onClick={() => {
-              const emoji = props.colorBlind
-                ? ["⬛", "🟦", "🟧"]
-                : ["⬛", "🟨", "🟩"];
               const score = gameState === GameState.Lost ? "X" : guesses.length;
               share(
                 "Result copied to clipboard!",
                 `${gameName} ${score}/${props.maxGuesses}\n` +
                   guesses
-                    .map((guess) =>
-                      clue(guess, target)
-                        .map((c) => emoji[c.clue ?? 0])
-                        .join("")
+                    .map(function(guess) {
+                      const oc = obscureClue(clue(guess, target));
+                      return `${oc.get(Clue.Elsewhere) ?? 0}-${oc.get(Clue.Correct) ?? 0}`
+                      }
                     )
                     .join("\n")
               );
             }}
           >
-            Share emoji results
+            Share results
           </button>
         )}
       </p>
