@@ -43,6 +43,9 @@ function App() {
 
   useEffect(() => {
     document.body.className = dark ? "dark" : "";
+    if (urlParam("random") === null && urlParam("seed") === null && urlParam("challenge") === null && urlParam("today") === null) {
+      document.location = "?today";
+    }
     setTimeout(() => {
       // Avoid transition on page load
       document.body.style.transition = "0.3s background-color ease-out";
@@ -81,8 +84,8 @@ function App() {
           visibility: page === "game" ? "visible" : "hidden",
         }}
       >
-        <a href={seed ? "?random" : "?today"}>
-          {seed ? "Random" : "Today's"}
+        <a href={seed && urlParam("challenge") === null ? "?random" : "?today"}>
+          {seed && urlParam("challenge") === null ? "Random" : "Today's"}
         </a>
       </div>
       {page === "about" && <About />}
