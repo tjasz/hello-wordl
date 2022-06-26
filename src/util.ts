@@ -3,7 +3,6 @@ import dictionary from "./dictionary.json";
 export enum Difficulty {
   Normal,
   Hard,
-  UltraHard,
 }
 
 export const gameName = "Obscurdle";

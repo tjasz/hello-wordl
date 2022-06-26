@@ -81,10 +81,9 @@ export function violation(
   if (difficulty === Difficulty.Normal) {
     return undefined;
   }
-  const ultra = difficulty === Difficulty.UltraHard;
   let i = 0;
 
-  // Hard: guesses should have the right amount of letters from each clue
+  // Guesses should have the right amount of letters from each clue
   const obscured = obscureClue(clues);
   const inCommon = obscureClue(clue(guess, pastGuess));
   const numberFromClueInTarget = ((obscured.get(Clue.Elsewhere) ?? 0) + (obscured.get(Clue.Correct) ?? 0));
@@ -93,13 +92,11 @@ export function violation(
   if (!sharesCorrectAmount) {
     return `Guess must share ${numberFromClueInTarget < numberFromClueInGuess ? "only " : ""}${numberFromClueInTarget} letter${numberFromClueInTarget !== 1 ? "s" : ""} with '${pastGuess.toUpperCase()}'.`;
   }
-  // Ultra hard: also obey Correct clues
-  if (ultra) {
-    const numberCorrectInClue = obscured.get(Clue.Correct) ?? 0;
-    const numberMatchedInGuess = inCommon.get(Clue.Correct) ?? 0;
-    if (numberMatchedInGuess != numberCorrectInClue) {
-      return `Guess must have ${numberCorrectInClue < numberMatchedInGuess ? "only " : ""}${numberCorrectInClue} letter${numberCorrectInClue !== 1 ? "s" : ""} in the same place as in '${pastGuess.toUpperCase()}'.`;
-    }
+  // Also obey Correct clues
+  const numberCorrectInClue = obscured.get(Clue.Correct) ?? 0;
+  const numberMatchedInGuess = inCommon.get(Clue.Correct) ?? 0;
+  if (numberMatchedInGuess != numberCorrectInClue) {
+    return `Guess must have ${numberCorrectInClue < numberMatchedInGuess ? "only " : ""}${numberCorrectInClue} letter${numberCorrectInClue !== 1 ? "s" : ""} in the same place as in '${pastGuess.toUpperCase()}'.`;
   }
   return undefined;
 }

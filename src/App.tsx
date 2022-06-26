@@ -120,13 +120,13 @@ function App() {
               id="difficulty-setting"
               type="range"
               min="0"
-              max="2"
+              max="1"
               value={difficulty}
               onChange={(e) => setDifficulty(+e.target.value)}
             />
             <div>
               <label htmlFor="difficulty-setting">Difficulty:</label>
-              <strong>{["Normal", "Hard", "Ultra Hard"][difficulty]}</strong>
+              <strong>{["Normal", "Hard"][difficulty]}</strong>
               <div
                 style={{
                   fontSize: 14,
@@ -138,8 +138,7 @@ function App() {
                 {
                   [
                     `Guesses must be valid dictionary words.`,
-                    `"Elsewhere" hints enforced. Guesses must share with past guesses the amount of letters indicated.`,
-                    `"Correct" hints enforced. Guesses must have the indicated number of letters in the same spot as in past guesses.`,
+                    `Guesses must use information from previous hints.`,
                   ][difficulty]
                 }
               </div>
