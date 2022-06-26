@@ -103,7 +103,7 @@ function Game(props: GameProps) {
       : `Make your first guess!`
   );
   const currentSeedParams = () =>
-    `?seed=${seed}&length=${wordLength}&game=${gameNumber}`;
+    urlParam("today") !== null ? "" : `?seed=${seed}&length=${wordLength}&game=${gameNumber}`;
   useEffect(() => {
     if (seed && urlParam("today") === null && !challenge) {
       window.history.replaceState(
@@ -340,7 +340,7 @@ function Game(props: GameProps) {
               const score = gameState === GameState.Lost ? "X" : guesses.length;
               share(
                 "Result copied to clipboard!",
-                `${gameName} ${score}/${props.maxGuesses}\n` +
+                `${gameName} ${describeSeed(seed)}: ${score}/${props.maxGuesses}\n` +
                   guesses
                     .map(function(guess) {
                       const oc = obscureClue(clue(guess, target));
