@@ -21,72 +21,61 @@ export function About() {
       <hr />
       <Row
         rowState={RowState.LockedIn}
-        wordLength={4}
+        wordLength={5}
         cluedLetters={[
-          { clue: Clue.Absent, letter: "c" },
+          { clue: Clue.Absent, letter: "h" },
           { clue: Clue.Absent, letter: "o" },
-          { clue: Clue.Absent, letter: "o" },
-          { clue: Clue.Absent, letter: "k" },
+          { clue: Clue.Absent, letter: "u" },
+          { clue: Clue.Absent, letter: "n" },
+          { clue: Clue.Absent, letter: "d" },
         ]}
       />
       <p>
-        None of the letters in <strong>COOK</strong> are in the target word.
+        None of the letters in <strong>HOUND</strong> are in the target word.
       </p>
       <Row
         rowState={RowState.LockedIn}
-        wordLength={4}
+        wordLength={5}
         cluedLetters={[
-          { clue: Clue.Absent, letter: "p" },
+          { clue: Clue.Absent, letter: "f" },
           { clue: Clue.Absent, letter: "l" },
-          { clue: Clue.Elsewhere, letter: "a" },
+          { clue: Clue.Absent, letter: "a" },
+          { clue: Clue.Elsewhere, letter: "s" },
+          { clue: Clue.Absent, letter: "h" },
+        ]}
+      />
+      <p>
+        One of the letters in <strong>FLASH</strong> is in the target word,
+        but in a different place.
+      </p>
+      <Row
+        rowState={RowState.LockedIn}
+        wordLength={5}
+        cluedLetters={[
+          { clue: Clue.Correct, letter: "s" },
+          { clue: Clue.Correct, letter: "t" },
+          { clue: Clue.Correct, letter: "e" },
+          { clue: Clue.Elsewhere, letter: "r" },
           { clue: Clue.Absent, letter: "n" },
         ]}
       />
       <p>
-        One of the letters in <strong>PLAN</strong> is in the target word,
+        <b className={"green-bg"}>3</b> of the letters in <strong>STERN </strong>
+        are in the correct place.
+      </p>
+      <p>
+        <b className={"yellow-bg"}>1</b> other letter from <strong>STERN</strong> is in the target word,
         but in a different place.
       </p>
       <Row
         rowState={RowState.LockedIn}
-        wordLength={4}
+        wordLength={5}
         cluedLetters={[
-          { clue: Clue.Absent, letter: "w" },
-          { clue: Clue.Correct, letter: "a" },
-          { clue: Clue.Correct, letter: "r" },
-          { clue: Clue.Elsewhere, letter: "d" },
-        ]}
-      />
-      <p>
-        <b className={"green-bg"}>2</b> of the letters in <strong>WARD </strong>
-        is in the correct place.
-      </p>
-      <p>
-        <b className={"yellow-bg"}>1</b> other letter is in the target word,
-        but in a different place.
-      </p>
-      <hr />
-      <p>
-        Let's move the <b>D</b> in our next guess:
-      </p>
-      <Row
-        rowState={RowState.LockedIn}
-        wordLength={4}
-        cluedLetters={[
-          { clue: Clue.Correct, letter: "d" },
-          { clue: Clue.Correct, letter: "a" },
-          { clue: Clue.Correct, letter: "r" },
-          { clue: Clue.Absent, letter: "k" },
-        ]}
-        annotation={"So close!"}
-      />
-      <Row
-        rowState={RowState.LockedIn}
-        wordLength={4}
-        cluedLetters={[
-          { clue: Clue.Correct, letter: "d" },
-          { clue: Clue.Correct, letter: "a" },
-          { clue: Clue.Correct, letter: "r" },
+          { clue: Clue.Correct, letter: "s" },
           { clue: Clue.Correct, letter: "t" },
+          { clue: Clue.Correct, letter: "e" },
+          { clue: Clue.Correct, letter: "e" },
+          { clue: Clue.Correct, letter: "r" },
         ]}
         annotation={"Got it!"}
       />
