@@ -29,7 +29,7 @@ const todaySeed =
   now.toLocaleDateString("en-US", { month: "2-digit" }) +
   now.toLocaleDateString("en-US", { day: "2-digit" });
 
-export const seed = urlParam("random") === null ? Number(todaySeed) : Number(urlParam("seed"));
+export const seed = urlParam("random") === null && urlParam("seed") === null ? Number(todaySeed) : Number(urlParam("seed"));
 const makeRandom = () => (seed ? mulberry32(seed) : () => Math.random());
 let random = makeRandom();
 
