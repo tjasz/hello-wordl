@@ -26,12 +26,6 @@ function useSetting<T>(
   return [current, setSetting];
 }
 
-const now = new Date();
-const todaySeed =
-  now.toLocaleDateString("en-US", { year: "numeric" }) +
-  now.toLocaleDateString("en-US", { month: "2-digit" }) +
-  now.toLocaleDateString("en-US", { day: "2-digit" });
-
 function App() {
   type Page = "game" | "about" | "settings";
   const [page, setPage] = useState<Page>("game");
@@ -49,9 +43,6 @@ function App() {
 
   useEffect(() => {
     document.body.className = dark ? "dark" : "";
-    if (urlParam("today") !== null || urlParam("todas") !== null) {
-      document.location = "?seed=" + todaySeed;
-    }
     setTimeout(() => {
       // Avoid transition on page load
       document.body.style.transition = "0.3s background-color ease-out";
@@ -90,7 +81,7 @@ function App() {
           visibility: page === "game" ? "visible" : "hidden",
         }}
       >
-        <a href={seed ? "?random" : "?seed=" + todaySeed}>
+        <a href={seed ? "?random" : "?today"}>
           {seed ? "Random" : "Today's"}
         </a>
       </div>

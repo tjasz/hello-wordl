@@ -105,7 +105,7 @@ function Game(props: GameProps) {
   const currentSeedParams = () =>
     `?seed=${seed}&length=${wordLength}&game=${gameNumber}`;
   useEffect(() => {
-    if (seed) {
+    if (seed && urlParam("today") === null) {
       window.history.replaceState(
         {},
         document.title,
