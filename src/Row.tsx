@@ -17,16 +17,28 @@ export function Row(props: RowProps) {
   let obscuredClue = obscureClue(props.cluedLetters);
   const isLockedIn = props.rowState === RowState.LockedIn;
   const isEditing = props.rowState === RowState.Editing;
+
+  let numberElsewhere = 0;
+  let numberCorrect = 0;
+  if (isLockedIn) {
+    numberElsewhere = obscuredClue.get(Clue.Elsewhere) ?? 0;
+    numberCorrect = obscuredClue.get(Clue.Correct) ?? 0;
+  }
+
   const letterDivs = props.cluedLetters
     .concat(Array(props.wordLength).fill({ clue: Clue.Absent, letter: "" }))
     .slice(0, props.wordLength)
     .map(({ clue, letter }, i) => {
       let letterClass = "Row-letter";
       if (isLockedIn && clue !== undefined) {
-        if (obscuredClue.has(Clue.Correct) || obscuredClue.has(Clue.Elsewhere)) {
-          letterClass += " " + clueClass(Clue.Unknown);
-        } else {
+        if (numberElsewhere === props.cluedLetters.length) {
+          letterClass += " " + clueClass(Clue.Elsewhere);
+        } else if (numberCorrect === props.cluedLetters.length) {
+          letterClass += " " + clueClass(Clue.Correct);
+        } else if (numberCorrect + numberElsewhere === 0) {
           letterClass += " " + clueClass(Clue.Absent);
+        } else {
+          letterClass += " " + clueClass(Clue.Unknown);
         }
       }
       return (
@@ -41,12 +53,6 @@ export function Row(props: RowProps) {
       );
     });
   let rowClass = "Row";
-  let numberElsewhere = 0;
-  let numberCorrect = 0;
-  if (isLockedIn) {
-    numberElsewhere = obscuredClue.get(Clue.Elsewhere) ?? 0;
-    numberCorrect = obscuredClue.get(Clue.Correct) ?? 0;
-  }
   if (isLockedIn) rowClass += " Row-locked-in";
   return (
     <tr className={rowClass}>
