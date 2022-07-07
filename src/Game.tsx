@@ -83,24 +83,36 @@ function parseUrlGameNumber(): number {
 }
 
 function Game(props: GameProps) {
-  const [gameState, setGameState] = useState(GameState.Playing);
-  const [guesses, setGuesses] = useState<string[]>([]);
-  const [currentGuess, setCurrentGuess] = useState<string>("");
   const [challenge, setChallenge] = useState<string>(initChallenge);
   const [wordLength, setWordLength] = useState(
     challenge ? challenge.length : parseUrlLength()
   );
   const [gameNumber, setGameNumber] = useState(parseUrlGameNumber());
+  const [guesses, setGuesses] = useState<string[]>(
+    !challenge && seed && gameNumber <= 1
+    ? JSON.parse(window.localStorage.getItem(`${seed}-guesses`) ?? "[]")
+    : []
+  );
+  const [currentGuess, setCurrentGuess] = useState<string>("");
   const [target, setTarget] = useState(() => {
     resetRng();
     // Skip RNG ahead to the parsed initial game number:
     for (let i = 1; i < gameNumber; i++) randomTarget(wordLength);
     return challenge || randomTarget(wordLength);
   });
+  const [gameState, setGameState] = useState(
+    guesses.includes(target)
+    ? GameState.Won
+    : guesses.length > props.maxGuesses
+      ? GameState.Lost
+      : GameState.Playing
+    );
   const [hint, setHint] = useState<string>(
-    challengeError
+    gameState === GameState.Playing
+    ? challengeError
       ? `Invalid challenge string, playing random game.`
       : `Make your first guess!`
+    : "Press enter to play a random game"
   );
   const currentSeedParams = () =>
     urlParam("today") !== null ? "" : `?random`;
@@ -113,6 +125,7 @@ function Game(props: GameProps) {
       );
     }
   }, [wordLength, gameNumber]);
+
   const tableRef = useRef<HTMLTableElement>(null);
   const startNextGame = () => {
     if (challenge) {
@@ -193,6 +206,10 @@ function Game(props: GameProps) {
         }
       }
       setGuesses((guesses) => guesses.concat([currentGuess]));
+      if (!challenge && seed && gameNumber <= 1)
+      {
+        window.localStorage.setItem(`${seed}-guesses`, JSON.stringify(guesses.concat([currentGuess])));
+      }
       setCurrentGuess((guess) => "");
 
       const gameOver = (verbed: string) =>
