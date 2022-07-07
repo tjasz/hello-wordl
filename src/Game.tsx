@@ -103,7 +103,7 @@ function Game(props: GameProps) {
       : `Make your first guess!`
   );
   const currentSeedParams = () =>
-    urlParam("today") !== null ? "" : `?seed=${seed}&length=${wordLength}&game=${gameNumber}`;
+    urlParam("today") !== null ? "" : `?random`;
   useEffect(() => {
     if (seed && urlParam("today") === null && !challenge) {
       window.history.replaceState(
@@ -117,7 +117,9 @@ function Game(props: GameProps) {
   const startNextGame = () => {
     if (challenge) {
       // Clear the URL parameters:
-      window.history.replaceState({}, document.title, window.location.pathname);
+      window.history.replaceState({}, document.title, window.location.pathname + "?today");
+    } else {
+      window.history.replaceState({}, document.title, window.location.pathname + "?random");
     }
     setChallenge("");
     const newWordLength = limitLength(wordLength);
@@ -131,7 +133,7 @@ function Game(props: GameProps) {
   };
 
   async function share(copiedHint: string, text?: string) {
-    const url = seed
+    const url = seed && gameNumber <= 1
       ? window.location.origin + window.location.pathname + currentSeedParams()
       : getChallengeUrl(target);
     const body = url + (text ? "\n\n" + text : "");
@@ -195,7 +197,7 @@ function Game(props: GameProps) {
 
       const gameOver = (verbed: string) =>
         `You ${verbed}! The answer was ${target.toUpperCase()}. (Enter to ${
-          challenge ? "play a random game" : "play again"
+          challenge ? "play today's game" : "play a random game"
         })`;
 
       if (currentGuess === target) {
@@ -284,8 +286,8 @@ function Game(props: GameProps) {
       <div className="Game-seed-info">
         {challenge
           ? "playing a challenge game"
-          : seed
-          ? `${describeSeed(seed)} — length ${wordLength}, game ${gameNumber}`
+          : seed && gameNumber <= 1
+          ? `${describeSeed(seed)}`
           : "playing a random game"}
       </div>
       <p>
@@ -302,7 +304,7 @@ function Game(props: GameProps) {
               const score = gameState === GameState.Lost ? "X" : guesses.length;
               share(
                 "Result copied to clipboard!",
-                `${gameName} ${describeSeed(seed)}: ${score}/${props.maxGuesses}\n` +
+                `${gameName} ${seed && gameNumber <= 1 ? describeSeed(seed) : ""}: ${score}/${props.maxGuesses}\n` +
                   guesses
                     .map(function(guess) {
                       const oc = obscureClue(clue(guess, target));
