@@ -7,7 +7,6 @@ import targetList from "./targets.json";
 import {
   describeSeed,
   dictionarySet,
-  Difficulty,
   gameName,
   pick,
   resetRng,
@@ -83,7 +82,7 @@ function parseUrlGameNumber(): number {
 }
 
 function Game(props: GameProps) {
-  const [difficulty, setDifficulty] = useSetting<number>("difficulty", 0);
+  const [validationLevel, setValidationLevel] = useSetting<number>("validation", 0);
   const [challenge, setChallenge] = useState<string>(initChallenge);
   const [wordLength, setWordLength] = useState(
     challenge ? challenge.length : parseUrlLength()
@@ -200,7 +199,7 @@ function Game(props: GameProps) {
       }
       for (const g of guesses) {
         const c = clue(g, target);
-        const feedback = violation(difficulty, c, g, currentGuess);
+        const feedback = violation(validationLevel, c, g, currentGuess);
         if (feedback) {
           setHint(feedback);
           return;
@@ -296,16 +295,16 @@ function Game(props: GameProps) {
       </p>
       <div className="Settings-setting">
         <input
-          id="difficulty-setting"
+          id="validation-level-setting"
           type="range"
           min="0"
           max="1"
-          value={difficulty}
-          onChange={(e) => setDifficulty(+e.target.value)}
+          value={validationLevel}
+          onChange={(e) => setValidationLevel(+e.target.value)}
         />
         <div>
-          <label htmlFor="difficulty-setting">Difficulty:</label>
-          <strong>{["Normal", "Hard"][difficulty]}</strong>
+          <label htmlFor="validation-level-setting">Validation Level:</label>
+          <strong>{["Normal", "Strict"][validationLevel]}</strong>
           <div
             style={{
               fontSize: 14,
@@ -318,7 +317,7 @@ function Game(props: GameProps) {
               [
                 `Guesses must be valid dictionary words.`,
                 `Guesses must use information from previous hints.`,
-              ][difficulty]
+              ][validationLevel]
             }
           </div>
         </div>

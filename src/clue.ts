@@ -1,4 +1,4 @@
-import { Difficulty, englishNumbers, ordinal } from "./util";
+import { ValidationLevel, englishNumbers, ordinal } from "./util";
 
 export enum Clue {
   Unknown,
@@ -33,7 +33,7 @@ export function clue(word: string, target: string): CluedLetter[] {
   });
 }
 
-export function obscureClue(cluedLetters : CluedLetter[]) : Map<Clue, number>{
+export function obscureClue(cluedLetters: CluedLetter[]): Map<Clue, number> {
   let obscured = new Map<Clue, number>();
   for (const { clue, letter } of cluedLetters) {
     if (clue === undefined) continue;
@@ -73,12 +73,12 @@ export function describeClue(clue: CluedLetter[]): string {
 }
 
 export function violation(
-  difficulty: Difficulty,
+  validationLevel: ValidationLevel,
   clues: CluedLetter[],
   pastGuess: string,
   guess: string
 ): string | undefined {
-  if (difficulty === Difficulty.Normal) {
+  if (validationLevel === ValidationLevel.Normal) {
     return undefined;
   }
   let i = 0;

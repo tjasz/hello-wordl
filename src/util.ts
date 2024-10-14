@@ -1,8 +1,8 @@
 import dictionary from "./dictionary.json";
 
-export enum Difficulty {
+export enum ValidationLevel {
   Normal,
-  Hard,
+  Strict,
 }
 
 export const gameName = "Obscurdle";
