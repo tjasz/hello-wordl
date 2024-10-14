@@ -13,6 +13,7 @@ import {
   seed,
   speak,
   urlParam,
+  ValidationLevel,
 } from "./util";
 import { decode, encode } from "./base64";
 import useSetting from "./useSetting"
@@ -293,33 +294,27 @@ function Game(props: GameProps) {
       >
         {hint || `\u00a0`}
       </p>
-      <div className="Settings-setting">
-        <input
-          id="validation-level-setting"
-          type="range"
-          min="0"
-          max="1"
-          value={validationLevel}
-          onChange={(e) => setValidationLevel(+e.target.value)}
+      <div>
+        <label htmlFor="validation-level-setting">Validation Level: </label>
+        <input type="button"
+          value={["Normal", "Strict"][validationLevel]}
+          onClick={(e) => setValidationLevel((validationLevel + 1) % (ValidationLevel.Strict + 1))}
         />
-        <div>
-          <label htmlFor="validation-level-setting">Validation Level:</label>
-          <strong>{["Normal", "Strict"][validationLevel]}</strong>
-          <div
-            style={{
-              fontSize: 14,
-              height: 40,
-              marginLeft: 8,
-              marginTop: 8,
-            }}
-          >
-            {
-              [
-                `Guesses must be valid dictionary words.`,
-                `Guesses must use information from previous hints.`,
-              ][validationLevel]
-            }
-          </div>
+        <div
+          style={{
+            display: "none",
+            fontSize: 14,
+            height: 40,
+            marginLeft: 8,
+            marginTop: 8,
+          }}
+        >
+          {
+            [
+              `Guesses must be valid dictionary words.`,
+              `Guesses must use information from previous hints.`,
+            ][validationLevel]
+          }
         </div>
       </div>
       <Keyboard
