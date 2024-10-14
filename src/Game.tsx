@@ -16,6 +16,7 @@ import {
   urlParam,
 } from "./util";
 import { decode, encode } from "./base64";
+import useSetting from "./useSetting"
 
 enum GameState {
   Playing,
@@ -26,7 +27,6 @@ enum GameState {
 interface GameProps {
   maxGuesses: number;
   hidden: boolean;
-  difficulty: Difficulty;
   colorBlind: boolean;
   keyboardLayout: string;
 }
@@ -83,6 +83,7 @@ function parseUrlGameNumber(): number {
 }
 
 function Game(props: GameProps) {
+  const [difficulty, setDifficulty] = useSetting<number>("difficulty", 0);
   const [challenge, setChallenge] = useState<string>(initChallenge);
   const [wordLength, setWordLength] = useState(
     challenge ? challenge.length : parseUrlLength()
@@ -90,8 +91,8 @@ function Game(props: GameProps) {
   const [gameNumber, setGameNumber] = useState(parseUrlGameNumber());
   const [guesses, setGuesses] = useState<string[]>(
     !challenge && seed && gameNumber <= 1
-    ? JSON.parse(window.localStorage.getItem(`${seed}-guesses`) ?? "[]")
-    : []
+      ? JSON.parse(window.localStorage.getItem(`${seed}-guesses`) ?? "[]")
+      : []
   );
   const [currentGuess, setCurrentGuess] = useState<string>("");
   const [target, setTarget] = useState(() => {
@@ -102,17 +103,17 @@ function Game(props: GameProps) {
   });
   const [gameState, setGameState] = useState(
     guesses.includes(target)
-    ? GameState.Won
-    : guesses.length > props.maxGuesses
-      ? GameState.Lost
-      : GameState.Playing
-    );
+      ? GameState.Won
+      : guesses.length > props.maxGuesses
+        ? GameState.Lost
+        : GameState.Playing
+  );
   const [hint, setHint] = useState<string>(
     gameState === GameState.Playing
-    ? challengeError
-      ? `Invalid challenge string, playing random game.`
-      : `Make your first guess!`
-    : "Press enter to play a random game"
+      ? challengeError
+        ? `Invalid challenge string, playing random game.`
+        : `Make your first guess!`
+      : "Press enter to play a random game"
   );
   const currentSeedParams = () =>
     urlParam("today") !== null ? "" : `?random`;
@@ -199,22 +200,20 @@ function Game(props: GameProps) {
       }
       for (const g of guesses) {
         const c = clue(g, target);
-        const feedback = violation(props.difficulty, c, g, currentGuess);
+        const feedback = violation(difficulty, c, g, currentGuess);
         if (feedback) {
           setHint(feedback);
           return;
         }
       }
       setGuesses((guesses) => guesses.concat([currentGuess]));
-      if (!challenge && seed && gameNumber <= 1)
-      {
+      if (!challenge && seed && gameNumber <= 1) {
         window.localStorage.setItem(`${seed}-guesses`, JSON.stringify(guesses.concat([currentGuess])));
       }
       setCurrentGuess((guess) => "");
 
       const gameOver = (verbed: string) =>
-        `You ${verbed}! The answer was ${target.toUpperCase()}. (Enter to ${
-          challenge ? "play today's game" : "play a random game"
+        `You ${verbed}! The answer was ${target.toUpperCase()}. (Enter to ${challenge ? "play today's game" : "play a random game"
         })`;
 
       if (currentGuess === target) {
@@ -268,8 +267,8 @@ function Game(props: GameProps) {
             lockedIn
               ? RowState.LockedIn
               : i === guesses.length
-              ? RowState.Editing
-              : RowState.Pending
+                ? RowState.Editing
+                : RowState.Pending
           }
           cluedLetters={cluedLetters}
         />
@@ -295,6 +294,35 @@ function Game(props: GameProps) {
       >
         {hint || `\u00a0`}
       </p>
+      <div className="Settings-setting">
+        <input
+          id="difficulty-setting"
+          type="range"
+          min="0"
+          max="1"
+          value={difficulty}
+          onChange={(e) => setDifficulty(+e.target.value)}
+        />
+        <div>
+          <label htmlFor="difficulty-setting">Difficulty:</label>
+          <strong>{["Normal", "Hard"][difficulty]}</strong>
+          <div
+            style={{
+              fontSize: 14,
+              height: 40,
+              marginLeft: 8,
+              marginTop: 8,
+            }}
+          >
+            {
+              [
+                `Guesses must be valid dictionary words.`,
+                `Guesses must use information from previous hints.`,
+              ][difficulty]
+            }
+          </div>
+        </div>
+      </div>
       <Keyboard
         layout={props.keyboardLayout}
         letterInfo={letterInfo}
@@ -304,8 +332,8 @@ function Game(props: GameProps) {
         {challenge
           ? "playing a challenge game"
           : seed && gameNumber <= 1
-          ? `${describeSeed(seed)}`
-          : "playing a random game"}
+            ? `${describeSeed(seed)}`
+            : "playing a random game"}
       </div>
       <p>
         <button
@@ -322,13 +350,13 @@ function Game(props: GameProps) {
               share(
                 "Result copied to clipboard!",
                 `${gameName} ${seed && gameNumber <= 1 ? describeSeed(seed) : ""}: ${score}/${props.maxGuesses}\n` +
-                  guesses
-                    .map(function(guess) {
-                      const oc = obscureClue(clue(guess, target));
-                      return `${oc.get(Clue.Elsewhere) ?? 0}-${oc.get(Clue.Correct) ?? 0}`
-                      }
-                    )
-                    .join("\n")
+                guesses
+                  .map(function (guess) {
+                    const oc = obscureClue(clue(guess, target));
+                    return `${oc.get(Clue.Elsewhere) ?? 0}-${oc.get(Clue.Correct) ?? 0}`
+                  }
+                  )
+                  .join("\n")
               );
             }}
           >

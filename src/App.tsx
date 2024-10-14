@@ -3,28 +3,7 @@ import { maxGuesses, seed, urlParam } from "./util";
 import Game from "./Game";
 import { useEffect, useState } from "react";
 import { About } from "./About";
-
-function useSetting<T>(
-  key: string,
-  initial: T
-): [T, (value: T | ((t: T) => T)) => void] {
-  const [current, setCurrent] = useState<T>(() => {
-    try {
-      const item = window.localStorage.getItem(key);
-      return item ? JSON.parse(item) : initial;
-    } catch (e) {
-      return initial;
-    }
-  });
-  const setSetting = (value: T | ((t: T) => T)) => {
-    try {
-      const v = value instanceof Function ? value(current) : value;
-      setCurrent(v);
-      window.localStorage.setItem(key, JSON.stringify(v));
-    } catch (e) {}
-  };
-  return [current, setSetting];
-}
+import useSetting from "./useSetting"
 
 function App() {
   type Page = "game" | "about" | "settings";
@@ -34,7 +13,6 @@ function App() {
     window.matchMedia("(prefers-color-scheme: dark)").matches;
   const [dark, setDark] = useSetting<boolean>("dark", prefersDark);
   const [colorBlind, setColorBlind] = useSetting<boolean>("colorblind", false);
-  const [difficulty, setDifficulty] = useSetting<number>("difficulty", 0);
   const [keyboard, setKeyboard] = useSetting<string>(
     "keyboard",
     "qwertyuiop-asdfghjkl-BzxcvbnmE"
@@ -110,35 +88,6 @@ function App() {
             <label htmlFor="colorblind-setting">High-contrast colors</label>
           </div>
           <div className="Settings-setting">
-            <input
-              id="difficulty-setting"
-              type="range"
-              min="0"
-              max="1"
-              value={difficulty}
-              onChange={(e) => setDifficulty(+e.target.value)}
-            />
-            <div>
-              <label htmlFor="difficulty-setting">Difficulty:</label>
-              <strong>{["Normal", "Hard"][difficulty]}</strong>
-              <div
-                style={{
-                  fontSize: 14,
-                  height: 40,
-                  marginLeft: 8,
-                  marginTop: 8,
-                }}
-              >
-                {
-                  [
-                    `Guesses must be valid dictionary words.`,
-                    `Guesses must use information from previous hints.`,
-                  ][difficulty]
-                }
-              </div>
-            </div>
-          </div>
-          <div className="Settings-setting">
             <label htmlFor="keyboard-setting">Keyboard layout:</label>
             <select
               name="keyboard-setting"
@@ -166,7 +115,6 @@ function App() {
       <Game
         maxGuesses={maxGuesses}
         hidden={page !== "game"}
-        difficulty={difficulty}
         colorBlind={colorBlind}
         keyboardLayout={keyboard.replaceAll(
           /[BE]/g,
