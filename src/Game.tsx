@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Row, RowState } from "./Row";
 import dictionary from "./dictionary.json";
-import { Clue, clue, describeClue, expectedLetterInfo, obscureClue, violation } from "./clue";
+import { Clue, clue, CluedLetter, describeClue, expectedLetterInfo, obscureClue, violation } from "./clue";
 import { Keyboard } from "./Keyboard";
 import targetList from "./targets.json";
 import {
@@ -244,7 +244,7 @@ function Game(props: GameProps) {
     };
   }, [currentGuess, gameState]);
 
-  let letterInfo = new Map<string, Clue>();
+  let letterInfo = new Map<string, CluedLetter>();
   const tableRows = Array(props.maxGuesses)
     .fill(undefined)
     .map((_, i) => {
@@ -254,20 +254,29 @@ function Game(props: GameProps) {
       const lockedIn = i < guesses.length;
       if (lockedIn) {
         const expectedInfo = expectedLetterInfo(guess, letterInfo);
+        console.log({ guess, expectedInfo, obscuredClue, letterInfo })
         // if we only get the expected number of correct letters, none of the others are in the target
         if ((obscuredClue.get(Clue.Correct) ?? 0) + (obscuredClue.get(Clue.Elsewhere) ?? 0) ===
           (expectedInfo.get(Clue.Correct) ?? 0) + (expectedInfo.get(Clue.Elsewhere) ?? 0)) {
           for (const { clue, letter } of cluedLetters) {
-            letterInfo.set(letter, Clue.Absent);
+            letterInfo.set(letter, { clue: Clue.Absent, letter, index: -1 });
           }
         }
         // if all the previously unknown letters in the guess are in the target
-        console.log({ guess, expectedInfo, obscuredClue, letterInfo })
         if ((expectedInfo.get(Clue.Unknown) ?? 0) + (expectedInfo.get(Clue.Correct) ?? 0) + (expectedInfo.get(Clue.Elsewhere) ?? 0) ===
           (obscuredClue.get(Clue.Correct) ?? 0) + (obscuredClue.get(Clue.Elsewhere) ?? 0)) {
           for (const { clue, letter } of cluedLetters) {
-            if ((letterInfo.get(letter) ?? Clue.Unknown) === Clue.Unknown) {
-              letterInfo.set(letter, Clue.Elsewhere);
+            if ((letterInfo.get(letter)?.clue ?? Clue.Unknown) === Clue.Unknown) {
+              letterInfo.set(letter, { clue: Clue.Elsewhere, letter, index: -1 });
+            }
+          }
+        }
+        // if all the previously unknown letters in the guess are in the correct spot
+        if ((expectedInfo.get(Clue.Unknown) ?? 0) + (expectedInfo.get(Clue.Correct) ?? 0) + (expectedInfo.get(Clue.Elsewhere) ?? 0) ===
+          (obscuredClue.get(Clue.Correct) ?? 0)) {
+          for (const { clue, letter, index } of cluedLetters) {
+            if ((letterInfo.get(letter)?.clue ?? Clue.Unknown) === Clue.Unknown || (letterInfo.get(letter)?.clue ?? Clue.Unknown) === Clue.Elsewhere) {
+              letterInfo.set(letter, { clue: Clue.Correct, letter, index });
             }
           }
         }
