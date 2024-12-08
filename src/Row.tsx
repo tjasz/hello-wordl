@@ -34,7 +34,6 @@ export function Row(props: RowProps) {
       if (isLockedIn && clue !== undefined) {
         const thisLetterInfo = props.letterInfo.get(letter);
         const letterInfoClue = thisLetterInfo?.clue ?? Clue.Unknown;
-        console.log({ thisLetterInfo })
         if (letterInfoClue !== Clue.Correct || thisLetterInfo?.index === i) {
           letterClass += " " + clueClass(letterInfoClue);
         } else {
