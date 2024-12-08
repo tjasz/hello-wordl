@@ -253,6 +253,7 @@ function Game(props: GameProps) {
       const obscuredClue = obscureClue(cluedLetters);
       const lockedIn = i < guesses.length;
       if (lockedIn) {
+        // if none of the letters in the guess are correct, we infer they are not in the target
         if (!obscuredClue.has(Clue.Correct) && !obscuredClue.has(Clue.Elsewhere)) {
           for (const { clue, letter } of cluedLetters) {
             letterInfo.set(letter, Clue.Absent);
@@ -271,6 +272,7 @@ function Game(props: GameProps) {
                 : RowState.Pending
           }
           cluedLetters={cluedLetters}
+          letterInfo={letterInfo}
         />
       );
     });

@@ -22,6 +22,7 @@ export function About() {
       <Row
         rowState={RowState.LockedIn}
         wordLength={5}
+        letterInfo={new Map<string, Clue>()}
         cluedLetters={[
           { clue: Clue.Absent, letter: "h" },
           { clue: Clue.Absent, letter: "o" },
@@ -36,6 +37,7 @@ export function About() {
       <Row
         rowState={RowState.LockedIn}
         wordLength={5}
+        letterInfo={new Map<string, Clue>()}
         cluedLetters={[
           { clue: Clue.Absent, letter: "f" },
           { clue: Clue.Absent, letter: "l" },
@@ -51,6 +53,7 @@ export function About() {
       <Row
         rowState={RowState.LockedIn}
         wordLength={5}
+        letterInfo={new Map<string, Clue>()}
         cluedLetters={[
           { clue: Clue.Correct, letter: "s" },
           { clue: Clue.Correct, letter: "t" },
@@ -70,6 +73,7 @@ export function About() {
       <Row
         rowState={RowState.LockedIn}
         wordLength={5}
+        letterInfo={new Map<string, Clue>()}
         cluedLetters={[
           { clue: Clue.Correct, letter: "s" },
           { clue: Clue.Correct, letter: "t" },
