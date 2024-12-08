@@ -261,6 +261,16 @@ function Game(props: GameProps) {
             letterInfo.set(letter, Clue.Absent);
           }
         }
+        // if all the previously unknown letters in the guess are in the target
+        console.log({ guess, expectedInfo, obscuredClue, letterInfo })
+        if ((expectedInfo.get(Clue.Unknown) ?? 0) + (expectedInfo.get(Clue.Correct) ?? 0) + (expectedInfo.get(Clue.Elsewhere) ?? 0) ===
+          (obscuredClue.get(Clue.Correct) ?? 0) + (obscuredClue.get(Clue.Elsewhere) ?? 0)) {
+          for (const { clue, letter } of cluedLetters) {
+            if ((letterInfo.get(letter) ?? Clue.Unknown) === Clue.Unknown) {
+              letterInfo.set(letter, Clue.Elsewhere);
+            }
+          }
+        }
       }
       return (
         <Row
