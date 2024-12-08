@@ -287,6 +287,7 @@ function Game(props: GameProps) {
   }, [currentGuess, gameState]);
 
   useEffect(() => setLetterInfo(getLetterInfo(target, guesses, letterInfo)), [guesses]);
+  useEffect(() => setLetterInfo(getLetterInfo(target, guesses, new Map<string, CluedLetter>())), [target]);
   const tableRows = Array(props.maxGuesses)
     .fill(undefined)
     .map((_, i) => {
