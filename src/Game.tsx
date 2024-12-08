@@ -94,13 +94,19 @@ function Game(props: GameProps) {
       ? JSON.parse(window.localStorage.getItem(`${seed}-guesses`) ?? "[]")
       : []
   );
-  const [letterInfo, setLetterInfo] = useState<Map<string, CluedLetter>>(new Map<string, CluedLetter>());
-  const updateLetterInfo = (target: string, guesses: string[], letterInfo: Map<string, CluedLetter>) => {
+  const [currentGuess, setCurrentGuess] = useState<string>("");
+  const [target, setTarget] = useState(() => {
+    resetRng();
+    // Skip RNG ahead to the parsed initial game number:
+    for (let i = 1; i < gameNumber; i++) randomTarget(wordLength);
+    return challenge || randomTarget(wordLength);
+  });
+
+  const getLetterInfo = (target: string, guesses: string[], letterInfo: Map<string, CluedLetter>) => {
     for (const guess of guesses.slice().reverse()) {
       const cluedLetters = clue(guess, target);
       const obscuredClue = obscureClue(cluedLetters);
       const expectedInfo = expectedLetterInfo(guess, letterInfo);
-      console.log({ guess, expectedInfo, obscuredClue, letterInfo })
       // if we only get the expected number of correct letters, none of the others are in the target
       if ((obscuredClue.get(Clue.Correct) ?? 0) + (obscuredClue.get(Clue.Elsewhere) ?? 0) ===
         (expectedInfo.get(Clue.Correct) ?? 0) + (expectedInfo.get(Clue.Elsewhere) ?? 0)) {
@@ -129,15 +135,14 @@ function Game(props: GameProps) {
         }
       }
     }
-    setLetterInfo(letterInfo);
+    return letterInfo;
   };
-  const [currentGuess, setCurrentGuess] = useState<string>("");
-  const [target, setTarget] = useState(() => {
-    resetRng();
-    // Skip RNG ahead to the parsed initial game number:
-    for (let i = 1; i < gameNumber; i++) randomTarget(wordLength);
-    return challenge || randomTarget(wordLength);
-  });
+  const [letterInfo, setLetterInfo] = useState<Map<string, CluedLetter>>(
+    getLetterInfo(target, guesses,
+      getLetterInfo(target, guesses, new Map<string, CluedLetter>())
+    )
+  );
+
   const [gameState, setGameState] = useState(
     guesses.includes(target)
       ? GameState.Won
@@ -281,7 +286,7 @@ function Game(props: GameProps) {
     };
   }, [currentGuess, gameState]);
 
-  useEffect(() => updateLetterInfo(target, guesses, letterInfo), [guesses, target]);
+  useEffect(() => setLetterInfo(getLetterInfo(target, guesses, letterInfo)), [guesses]);
   const tableRows = Array(props.maxGuesses)
     .fill(undefined)
     .map((_, i) => {
@@ -304,7 +309,6 @@ function Game(props: GameProps) {
         />
       );
     });
-
   return (
     <div className="Game" style={{ display: props.hidden ? "none" : "block" }}>
       <table
