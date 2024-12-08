@@ -1,4 +1,4 @@
-import { ValidationLevel, englishNumbers, ordinal } from "./util";
+import { ValidationLevel } from "./util";
 
 export enum Clue {
   Unknown,
@@ -8,8 +8,9 @@ export enum Clue {
 }
 
 export interface CluedLetter {
-  clue?: Clue;
+  clue: Clue;
   letter: string;
+  index: number;
 }
 
 export function clue(word: string, target: string): CluedLetter[] {
@@ -19,16 +20,20 @@ export function clue(word: string, target: string): CluedLetter[] {
       elusive.push(letter);
     }
   });
-  return word.split("").map((letter, i) => {
+  return word.split("").map((letter, index) => {
     let j: number;
-    if (target[i] === letter) {
-      return { clue: Clue.Correct, letter };
+    if (target[index] === letter) {
+      return { clue: Clue.Correct, letter, index };
     } else if ((j = elusive.indexOf(letter)) > -1) {
       // "use it up" so we don't clue at it twice
       elusive[j] = "";
-      return { clue: Clue.Elsewhere, letter };
+      return {
+        clue: Clue.Elsewhere, letter, index: -1
+      };
     } else {
-      return { clue: Clue.Absent, letter };
+      return {
+        clue: Clue.Absent, letter, index: -1
+      };
     }
   });
 }
@@ -36,6 +41,16 @@ export function clue(word: string, target: string): CluedLetter[] {
 export function obscureClue(cluedLetters: CluedLetter[]): Map<Clue, number> {
   let obscured = new Map<Clue, number>();
   for (const { clue, letter } of cluedLetters) {
+    if (clue === undefined) continue;
+    obscured.set(clue, 1 + (obscured.get(clue) ?? 0));
+  }
+  return obscured;
+}
+
+export function expectedLetterInfo(guess: string, letterInfo: Map<string, CluedLetter>): Map<Clue, number> {
+  let obscured = new Map<Clue, number>();
+  for (const letter of guess) {
+    const clue = letterInfo.get(letter)?.clue ?? Clue.Unknown;
     if (clue === undefined) continue;
     obscured.set(clue, 1 + (obscured.get(clue) ?? 0));
   }

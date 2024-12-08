@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Row, RowState } from "./Row";
 import dictionary from "./dictionary.json";
-import { Clue, clue, describeClue, obscureClue, violation } from "./clue";
+import { Clue, clue, CluedLetter, describeClue, expectedLetterInfo, obscureClue, violation } from "./clue";
 import { Keyboard } from "./Keyboard";
 import targetList from "./targets.json";
 import {
@@ -101,6 +101,48 @@ function Game(props: GameProps) {
     for (let i = 1; i < gameNumber; i++) randomTarget(wordLength);
     return challenge || randomTarget(wordLength);
   });
+
+  const getLetterInfo = (target: string, guesses: string[], letterInfo: Map<string, CluedLetter>) => {
+    for (const guess of guesses.slice().reverse()) {
+      const cluedLetters = clue(guess, target);
+      const obscuredClue = obscureClue(cluedLetters);
+      const expectedInfo = expectedLetterInfo(guess, letterInfo);
+      // if we only get the expected number of correct letters, none of the others are in the target
+      if ((obscuredClue.get(Clue.Correct) ?? 0) + (obscuredClue.get(Clue.Elsewhere) ?? 0) ===
+        (expectedInfo.get(Clue.Correct) ?? 0) + (expectedInfo.get(Clue.Elsewhere) ?? 0)) {
+        for (const { clue, letter } of cluedLetters) {
+          if ((letterInfo.get(letter)?.clue ?? Clue.Unknown) === Clue.Unknown) {
+            letterInfo.set(letter, { clue: Clue.Absent, letter, index: -1 });
+          }
+        }
+      }
+      // if all the previously unknown letters in the guess are in the target
+      if ((expectedInfo.get(Clue.Unknown) ?? 0) + (expectedInfo.get(Clue.Correct) ?? 0) + (expectedInfo.get(Clue.Elsewhere) ?? 0) ===
+        (obscuredClue.get(Clue.Correct) ?? 0) + (obscuredClue.get(Clue.Elsewhere) ?? 0)) {
+        for (const { clue, letter } of cluedLetters) {
+          if ((letterInfo.get(letter)?.clue ?? Clue.Unknown) === Clue.Unknown) {
+            letterInfo.set(letter, { clue: Clue.Elsewhere, letter, index: -1 });
+          }
+        }
+      }
+      // if all the previously unknown letters in the guess are in the correct spot
+      if ((expectedInfo.get(Clue.Unknown) ?? 0) + (expectedInfo.get(Clue.Correct) ?? 0) + (expectedInfo.get(Clue.Elsewhere) ?? 0) ===
+        (obscuredClue.get(Clue.Correct) ?? 0)) {
+        for (const { clue, letter, index } of cluedLetters) {
+          if ((letterInfo.get(letter)?.clue ?? Clue.Unknown) === Clue.Unknown || (letterInfo.get(letter)?.clue ?? Clue.Unknown) === Clue.Elsewhere) {
+            letterInfo.set(letter, { clue: Clue.Correct, letter, index });
+          }
+        }
+      }
+    }
+    return letterInfo;
+  };
+  const [letterInfo, setLetterInfo] = useState<Map<string, CluedLetter>>(
+    getLetterInfo(target, guesses,
+      getLetterInfo(target, guesses, new Map<string, CluedLetter>())
+    )
+  );
+
   const [gameState, setGameState] = useState(
     guesses.includes(target)
       ? GameState.Won
@@ -244,21 +286,14 @@ function Game(props: GameProps) {
     };
   }, [currentGuess, gameState]);
 
-  let letterInfo = new Map<string, Clue>();
+  useEffect(() => setLetterInfo(getLetterInfo(target, guesses, letterInfo)), [guesses]);
+  useEffect(() => setLetterInfo(getLetterInfo(target, guesses, new Map<string, CluedLetter>())), [target]);
   const tableRows = Array(props.maxGuesses)
     .fill(undefined)
     .map((_, i) => {
       const guess = [...guesses, currentGuess][i] ?? "";
       const cluedLetters = clue(guess, target);
-      const obscuredClue = obscureClue(cluedLetters);
       const lockedIn = i < guesses.length;
-      if (lockedIn) {
-        if (!obscuredClue.has(Clue.Correct) && !obscuredClue.has(Clue.Elsewhere)) {
-          for (const { clue, letter } of cluedLetters) {
-            letterInfo.set(letter, Clue.Absent);
-          }
-        }
-      }
       return (
         <Row
           key={i}
@@ -271,10 +306,10 @@ function Game(props: GameProps) {
                 : RowState.Pending
           }
           cluedLetters={cluedLetters}
+          letterInfo={letterInfo}
         />
       );
     });
-
   return (
     <div className="Game" style={{ display: props.hidden ? "none" : "block" }}>
       <table

@@ -11,6 +11,7 @@ interface RowProps {
   wordLength: number;
   cluedLetters: CluedLetter[];
   annotation?: string;
+  letterInfo: Map<string, CluedLetter>;
 }
 
 export function Row(props: RowProps) {
@@ -26,19 +27,17 @@ export function Row(props: RowProps) {
   }
 
   const letterDivs = props.cluedLetters
-    .concat(Array(props.wordLength).fill({ clue: Clue.Absent, letter: "" }))
+    .concat(Array(props.wordLength).fill({ clue: Clue.Absent, letter: "", index: -1 }))
     .slice(0, props.wordLength)
-    .map(({ clue, letter }, i) => {
+    .map(({ clue, letter, index }, i) => {
       let letterClass = "Row-letter";
       if (isLockedIn && clue !== undefined) {
-        if (numberElsewhere === props.cluedLetters.length) {
-          letterClass += " " + clueClass(Clue.Elsewhere);
-        } else if (numberCorrect === props.cluedLetters.length) {
-          letterClass += " " + clueClass(Clue.Correct);
-        } else if (numberCorrect + numberElsewhere === 0) {
-          letterClass += " " + clueClass(Clue.Absent);
+        const thisLetterInfo = props.letterInfo.get(letter);
+        const letterInfoClue = thisLetterInfo?.clue ?? Clue.Unknown;
+        if (letterInfoClue !== Clue.Correct || thisLetterInfo?.index === i) {
+          letterClass += " " + clueClass(letterInfoClue);
         } else {
-          letterClass += " " + clueClass(Clue.Unknown);
+          letterClass += " " + clueClass(Clue.Elsewhere);
         }
       }
       return (
