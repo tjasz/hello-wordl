@@ -42,6 +42,16 @@ export function obscureClue(cluedLetters: CluedLetter[]): Map<Clue, number> {
   return obscured;
 }
 
+export function expectedLetterInfo(guess: string, letterInfo: Map<string, Clue>): Map<Clue, number> {
+  let obscured = new Map<Clue, number>();
+  for (const letter of guess) {
+    const clue = letterInfo.get(letter) ?? Clue.Unknown;
+    if (clue === undefined) continue;
+    obscured.set(clue, 1 + (obscured.get(clue) ?? 0));
+  }
+  return obscured;
+}
+
 export function clueClass(clue: Clue): string {
   if (clue === Clue.Unknown) {
     return "letter-unknown";

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Row, RowState } from "./Row";
 import dictionary from "./dictionary.json";
-import { Clue, clue, describeClue, obscureClue, violation } from "./clue";
+import { Clue, clue, describeClue, expectedLetterInfo, obscureClue, violation } from "./clue";
 import { Keyboard } from "./Keyboard";
 import targetList from "./targets.json";
 import {
@@ -253,8 +253,10 @@ function Game(props: GameProps) {
       const obscuredClue = obscureClue(cluedLetters);
       const lockedIn = i < guesses.length;
       if (lockedIn) {
-        // if none of the letters in the guess are correct, we infer they are not in the target
-        if (!obscuredClue.has(Clue.Correct) && !obscuredClue.has(Clue.Elsewhere)) {
+        const expectedInfo = expectedLetterInfo(guess, letterInfo);
+        // if we only get the expected number of correct letters, none of the others are in the target
+        if ((obscuredClue.get(Clue.Correct) ?? 0) + (obscuredClue.get(Clue.Elsewhere) ?? 0) ===
+          (expectedInfo.get(Clue.Correct) ?? 0) + (expectedInfo.get(Clue.Elsewhere) ?? 0)) {
           for (const { clue, letter } of cluedLetters) {
             letterInfo.set(letter, Clue.Absent);
           }
