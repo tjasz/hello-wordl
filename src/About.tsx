@@ -1,4 +1,4 @@
-import { Clue, CluedLetter } from "./clue";
+import { Clue } from "./clue";
 import { Row, RowState } from "./Row";
 import { gameName, maxGuesses } from "./util";
 
@@ -22,13 +22,12 @@ export function About() {
       <Row
         rowState={RowState.LockedIn}
         wordLength={5}
-        letterInfo={new Map<string, CluedLetter>()}
         cluedLetters={[
-          { clue: Clue.Absent, letter: "h", index: -1 },
-          { clue: Clue.Absent, letter: "o", index: -1 },
-          { clue: Clue.Absent, letter: "u", index: -1 },
-          { clue: Clue.Absent, letter: "n", index: -1 },
-          { clue: Clue.Absent, letter: "d", index: -1 },
+          { clue: Clue.Absent, letter: "h" },
+          { clue: Clue.Absent, letter: "o" },
+          { clue: Clue.Absent, letter: "u" },
+          { clue: Clue.Absent, letter: "n" },
+          { clue: Clue.Absent, letter: "d" },
         ]}
       />
       <p>
@@ -37,13 +36,12 @@ export function About() {
       <Row
         rowState={RowState.LockedIn}
         wordLength={5}
-        letterInfo={new Map<string, CluedLetter>()}
         cluedLetters={[
-          { clue: Clue.Absent, letter: "f", index: -1 },
-          { clue: Clue.Absent, letter: "l", index: -1 },
-          { clue: Clue.Absent, letter: "a", index: -1 },
-          { clue: Clue.Elsewhere, letter: "s", index: -1 },
-          { clue: Clue.Absent, letter: "h", index: -1 },
+          { clue: Clue.Absent, letter: "f" },
+          { clue: Clue.Absent, letter: "l" },
+          { clue: Clue.Absent, letter: "a" },
+          { clue: Clue.Elsewhere, letter: "s" },
+          { clue: Clue.Absent, letter: "h" },
         ]}
       />
       <p>
@@ -53,13 +51,12 @@ export function About() {
       <Row
         rowState={RowState.LockedIn}
         wordLength={5}
-        letterInfo={new Map<string, CluedLetter>()}
         cluedLetters={[
-          { clue: Clue.Correct, letter: "s", index: 0 },
-          { clue: Clue.Correct, letter: "t", index: 1 },
-          { clue: Clue.Correct, letter: "e", index: 2 },
-          { clue: Clue.Elsewhere, letter: "r", index: -1 },
-          { clue: Clue.Absent, letter: "n", index: -1 },
+          { clue: Clue.Correct, letter: "s" },
+          { clue: Clue.Correct, letter: "t" },
+          { clue: Clue.Correct, letter: "e" },
+          { clue: Clue.Elsewhere, letter: "r" },
+          { clue: Clue.Absent, letter: "n" },
         ]}
       />
       <p>
@@ -73,13 +70,12 @@ export function About() {
       <Row
         rowState={RowState.LockedIn}
         wordLength={5}
-        letterInfo={new Map<string, CluedLetter>()}
         cluedLetters={[
-          { clue: Clue.Correct, letter: "s", index: 0 },
-          { clue: Clue.Correct, letter: "t", index: 1 },
-          { clue: Clue.Correct, letter: "e", index: 2 },
-          { clue: Clue.Correct, letter: "e", index: 3 },
-          { clue: Clue.Correct, letter: "r", index: 4 },
+          { clue: Clue.Correct, letter: "s" },
+          { clue: Clue.Correct, letter: "t" },
+          { clue: Clue.Correct, letter: "e" },
+          { clue: Clue.Correct, letter: "e" },
+          { clue: Clue.Correct, letter: "r" },
         ]}
         annotation={"Got it!"}
       />

@@ -11,7 +11,6 @@ interface RowProps {
   wordLength: number;
   cluedLetters: CluedLetter[];
   annotation?: string;
-  letterInfo: Map<string, CluedLetter>;
 }
 
 export function Row(props: RowProps) {
@@ -27,17 +26,19 @@ export function Row(props: RowProps) {
   }
 
   const letterDivs = props.cluedLetters
-    .concat(Array(props.wordLength).fill({ clue: Clue.Absent, letter: "", index: -1 }))
+    .concat(Array(props.wordLength).fill({ clue: Clue.Absent, letter: "" }))
     .slice(0, props.wordLength)
-    .map(({ clue, letter, index }, i) => {
+    .map(({ clue, letter }, i) => {
       let letterClass = "Row-letter";
       if (isLockedIn && clue !== undefined) {
-        const thisLetterInfo = props.letterInfo.get(letter);
-        const letterInfoClue = thisLetterInfo?.clue ?? Clue.Unknown;
-        if (letterInfoClue !== Clue.Correct || thisLetterInfo?.index === i) {
-          letterClass += " " + clueClass(letterInfoClue);
-        } else {
+        if (numberElsewhere === props.cluedLetters.length) {
           letterClass += " " + clueClass(Clue.Elsewhere);
+        } else if (numberCorrect === props.cluedLetters.length) {
+          letterClass += " " + clueClass(Clue.Correct);
+        } else if (numberCorrect + numberElsewhere === 0) {
+          letterClass += " " + clueClass(Clue.Absent);
+        } else {
+          letterClass += " " + clueClass(Clue.Unknown);
         }
       }
       return (
